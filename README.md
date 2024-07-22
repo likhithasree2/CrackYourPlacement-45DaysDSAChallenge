@@ -1,2 +1,1 @@
-# CrackYourPlacement-45DaysDSAChallenge
-#CrackYourInternship #CrackYourPlacement Challenge  #ReviseWithArsh
+# CrackYourPlacement - Arsh Goyal 45 Days DSA Challenge
