@@ -1,0 +1,85 @@
+# Remove Duplicates From Sorted Array Problem
+class Solution {
+    public int removeDuplicates(int[] nums) {
+        if (nums.length == 0) {
+            return 0;
+        }
+        
+        int i = 0;
+        for (int j = 1; j < nums.length; j++) {
+            if (nums[j] != nums[i]) {
+                i++;
+                nums[i] = nums[j];
+            }
+        }
+        
+        return i + 1;
+    }
+}
+
+# Move Zeroes Problem
+class Solution {
+    public void moveZeroes(int[] nums) {
+        int j = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != 0) {
+                nums[j++] = nums[i];
+            }
+        }
+        while (j < nums.length) {
+            nums[j++] = 0;
+        }
+    }
+}
+
+# Best Time to Buy and Sell Stock Problem
+class Solution {
+    public int maxProfit(int[] arr) {
+        int min=arr[0];
+        int max=0;
+        int n=arr.length;
+        for(int i=0;i<n;i++){
+            if(arr[i]<min){
+                min=arr[i];
+            }
+            else if(arr[i]-min > max){
+                max=arr[i]-min;
+            }
+        }
+        return max;
+    }
+}
+
+# Two Sum Problem
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        int n=nums.length;
+        Map<Integer,Integer> map=new HashMap<>();
+        int[] result=new int[2];
+        for(int i=0;i<n;i++){
+            if(map.containsKey(target-nums[i])){
+                result[1]=i;
+                result[0]=map.get(target-nums[i]);
+                return result;
+            }
+            map.put(nums[i],i);
+        }
+        return result;
+    }
+}
+
+# Merge Sorted Array Problem
+class Solution {
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        for (int j = 0, i = m; j < n; j++) {
+            nums1[i] = nums2[j];
+            i++;
+        }
+        Arrays.sort(nums1);
+    }
+}
+
+#Majority Element Problem
+
+
+
