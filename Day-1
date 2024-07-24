@@ -1,4 +1,4 @@
-# Remove Duplicates From Sorted Array Problem
+1Q. Remove Duplicates From Sorted Array Problem
 class Solution {
     public int removeDuplicates(int[] nums) {
         if (nums.length == 0) {
@@ -17,7 +17,7 @@ class Solution {
     }
 }
 
-# Move Zeroes Problem
+2Q. Move Zeroes Problem
 class Solution {
     public void moveZeroes(int[] nums) {
         int j = 0;
@@ -32,7 +32,7 @@ class Solution {
     }
 }
 
-# Best Time to Buy and Sell Stock Problem
+3Q. Best Time to Buy and Sell Stock Problem
 class Solution {
     public int maxProfit(int[] arr) {
         int min=arr[0];
@@ -50,7 +50,7 @@ class Solution {
     }
 }
 
-# Two Sum Problem
+4Q. Two Sum Problem
 class Solution {
     public int[] twoSum(int[] nums, int target) {
         int n=nums.length;
@@ -68,7 +68,7 @@ class Solution {
     }
 }
 
-# Merge Sorted Array Problem
+5Q. Merge Sorted Array Problem
 class Solution {
     public void merge(int[] nums1, int m, int[] nums2, int n) {
         for (int j = 0, i = m; j < n; j++) {
@@ -79,7 +79,7 @@ class Solution {
     }
 }
 
-#Majority Element Problem
+ 6Q. Majority Element Problem
 class Solution {
     public void swap(int []arr,int i ,int j){
         int temp =arr[i];
