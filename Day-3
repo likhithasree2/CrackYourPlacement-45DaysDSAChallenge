@@ -1,0 +1,154 @@
+1Q. Find All Duplicates in an Array
+CODE:
+class Solution {
+    public List<Integer> findDuplicates(int[] nums) {
+      List<Integer> ans=new ArrayList<>();
+      HashSet<Integer> st=new HashSet<>();
+      for(int i=0;i<nums.length;i++){
+        if(st.contains(nums[i])) ans.add(nums[i]);
+         st.add(nums[i]);
+      } 
+      return ans; 
+    }
+}
+=========================================================================================
+2Q. Container with Most Water
+CODE:
+class Solution {
+    public int maxArea(int[] height) {
+        int maxWater = 0;
+        int left = 0;
+        int right = height.length - 1;
+
+        while (left < right) {
+            int currentWater = Math.min(height[left], height[right]) * (right - left);
+            maxWater = Math.max(maxWater, currentWater);
+
+            if (height[left] < height[right]) {
+                left++;
+            } else {
+                right--;
+            }
+        }
+
+        return maxWater;
+    }
+}
+==========================================================================================
+3Q. Four Sum
+CODE:
+class Solution {
+    static Map<Integer, List<String>> map = new HashMap<>();
+    
+    static {
+        map.put(2, List.of("a","b","c"));
+        map.put(3, List.of("d","e","f"));
+        map.put(4, List.of("g","h","i"));
+        map.put(5, List.of("j","k","l"));
+        map.put(6, List.of("m","n","o"));
+        map.put(7, List.of("p","q","r","s"));
+        map.put(8, List.of("t","u","v"));
+        map.put(9, List.of("w","x","y","z"));
+    }
+    public List<String> letterCombinations(String digits) {
+        if(digits == null || digits.length() == 0)
+            return Collections.emptyList();
+        List<String> result = new ArrayList<>();
+        findCombinations(0, new StringBuilder(), digits.toCharArray(), result);
+        return result;
+    }
+
+    void findCombinations(int idx, StringBuilder letters, char[] chars, List<String> result) {
+        if(idx == chars.length) {
+            result.add(letters.toString());
+            return;
+        }
+        for(String c : map.get(chars[idx]-'0')) {
+            letters.append(c);
+            findCombinations(idx+1, letters, chars, result);
+            letters.deleteCharAt(letters.length()-1);
+        }
+    }
+}
+===========================================================================================
+4Q. Maximum Points You Can Obtain From Cards
+CODE:
+class Solution {
+    public int maxScore(int[] cardPoints, int k) {
+        int len = cardPoints.length;
+        int st = len - k;
+        int end = st;
+        int sum = 0;
+        int res = 0;
+        for(int i = 0; i < k * 2; i++){
+            sum += cardPoints[end % len];
+            if(i >= k - 1){
+                res = Math.max(res, sum);
+                sum -= cardPoints[st % len];
+                st++;
+            }
+            end++;
+        }
+        return res;
+    }
+}
+============================================================================================
+5Q. Subarray Sum Equals K
+CODE:
+class Solution {
+    public int subarraySum(int[] arr, int k) {
+        HashMap<Integer,Integer>mpp=new HashMap<>();
+        mpp.put(0,1);
+        int presum=0;int c=0;
+        for(int i=0;i<arr.length;i++){
+           presum=presum+arr[i];
+           int find=presum-k;
+           c=c+mpp.getOrDefault(find,0);
+           mpp.put(presum,mpp.getOrDefault(presum,0)+1);
+        }
+        return c;
+    }
+}
+==============================================================================================
+6Q. Spiral Matrix
+CODE:
+class Solution {
+    public List<Integer> spiralOrder(int[][] matrix) {
+        int m = matrix.length;
+        int n = matrix[0].length;
+        int sr = 0, er = m-1;
+        int sc = 0, ec = n-1;
+        int total = m * n;
+        List<Integer> res = new ArrayList<>();
+        
+        while(total > 0){
+            
+            //first row
+            for(int i=sc; i<=ec && total>0; i++){
+                res.add(matrix[sr][i]);
+                total--;
+            }
+            sr++;
+            //last col
+            for(int i=sr; i<=er && total>0; i++){
+                res.add(matrix[i][ec]);
+                total--;
+            }
+            ec--;
+            // last row
+            for(int i=ec; i>=sc && total>0; i--){
+                res.add(matrix[er][i]);
+                total--;
+            }
+            er--;
+            // first col
+            for(int i=er; i>=sr && total>0; i--){
+                res.add(matrix[i][sc]);
+                total--;
+            }
+            sc++;
+            
+        }
+        return res;
+    }
+}
