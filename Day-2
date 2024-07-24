@@ -1,0 +1,149 @@
+1Q. Find The Duplicate Numbers
+CODE:
+class Solution {
+    public int findDuplicate(int[] nums) {
+     HashSet<Integer>set=new HashSet();
+        for(int i:nums){
+            if(!set.add(i)){
+                return i;
+            }
+        }
+        return -1;
+    }
+}
+===================================================================================================================
+2Q. Sort Colors
+CODE:
+class Solution {
+    public void sortColors(int[] nums) {
+        int zeroCnt = 0, oneCnt = 0, twoCnt = 0;
+
+        for(int i = 0; i < nums.length; i++) {
+            if(nums[i] == 0) {
+                zeroCnt++;
+            } else if(nums[i] == 1) {
+                oneCnt++;
+            } else {
+                twoCnt++;
+            }
+        }
+
+        int arrayIterator = 0;
+
+        for(int i = 0; i < zeroCnt; i++) {
+            nums[arrayIterator] = 0;
+            arrayIterator++;
+        }
+
+        for(int i = 0; i < oneCnt; i++) {
+            nums[arrayIterator] = 1;
+            arrayIterator++;
+        }
+
+        for(int i = 0; i < twoCnt; i++) {
+            nums[arrayIterator] = 2;
+            arrayIterator++;
+        }
+    }
+}
+============================================================================================================
+3Q. Set Matrix Zeroes
+CODE:
+class Solution {
+    public void setZeroes(int[][] matrix) {
+
+        int rows = matrix.length;
+        int columns = matrix[0].length;
+
+        int[] row = new int[rows];
+        int[] column = new int[columns];
+
+
+        for(int i =0; i < rows; i++) {
+            for(int j=0; j < columns; j++) {
+                if(matrix[i][j] == 0) {
+                    row[i] = -1;
+                    column[j] = -1;
+                }
+            }
+
+        }
+
+        for(int i =0; i < rows; i++) {
+            for(int j =0; j< columns; j++) {
+                if(row[i] == -1 || column[j] == -1) {
+                    matrix[i][j] = 0;
+                }
+            }
+        }
+
+    }
+}
+=========================================================================================================
+4Q. Best Time To Buy or Sell Stocks II
+CODE:
+class Solution {
+    public int maxProfit(int[] prices) {
+        int profit = 0;
+        for(int i=1;i<prices.length;i++){
+            if(prices[i]>prices[i-1]){
+                profit = profit + (prices[i]-prices[i-1]);
+            }
+        }
+        return profit;
+    }
+}
+============================================================================================================
+5Q. Subarray Sums Divisible by K
+CODE:
+class Solution {
+    public int subarraysDivByK(int[] nums, int k) {
+        int count = 0;
+        int n = nums.length;
+
+        // Iterate through all possible subarrays
+        for (int start = 0; start < n; start++) {
+            int sum = 0;
+            for (int end = start; end < n; end++) {
+                sum += nums[end]; // Calculate the sum of the current subarray
+                
+                if (sum % k == 0) { // Check if the sum is divisible by k
+                    count++;
+                }
+            }
+        }
+
+        return count;
+    }
+}
+=================================================================================================================
+6Q. Three Sum
+CODE:
+class Solution {
+    public List<List<Integer>> threeSum(int[] nums) {
+    if(nums==null||nums.length<3)
+    return new ArrayList<>();
+       Arrays.sort(nums);
+       HashSet<List<Integer>> result = new HashSet<>();
+       for(int i=0;i<nums.length-2;i++){
+        int left = i+1;
+        int right = nums.length-1;
+        while(left<right){
+            int sum = nums[i]+nums[left]+nums[right];
+            if(sum==0){
+                result.add(Arrays.asList(nums[i],nums[left],nums[right]));
+                left++;
+                right--;
+            }
+            else if(sum<0){
+                left++;
+            }
+            else{
+                right--;
+            }
+        }
+       }
+       return new ArrayList<>(result);
+    }
+}
+
