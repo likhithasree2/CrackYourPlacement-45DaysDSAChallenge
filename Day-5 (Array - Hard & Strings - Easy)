@@ -1,0 +1,209 @@
+===============================================Array - Hard=================================================================================
+1Q. Max Value of Equation
+CODE:
+class Solution {
+    public int findMaxValueOfEquation(int[][] points, int k) {
+        Deque<Pair<Integer, Integer>> dq = new ArrayDeque<>();
+
+        int res=Integer.MIN_VALUE;
+        for(var point:points){
+            while(!dq.isEmpty() && point[0]-dq.peekFirst().getValue() > k){
+                dq.pollFirst();
+            }
+            if(!dq.isEmpty()){
+                res  = Math.max(res, dq.peekFirst().getKey() + point[0] + point[1]);
+            }
+
+            while(!dq.isEmpty() && point[1]-point[0] > dq.peekLast().getKey()){
+                dq.pollLast();
+            }
+            dq.offerLast(new Pair<>(point[1]-point[0], point[0]));
+        }
+        return res;
+    }
+}
+==================================================================================================================================================
+2Q. Insert Delete GetRandom O(1) - Duplicates Allowed
+Code:
+class RandomizedCollection {
+
+Random r;
+HashMap<Integer , HashSet<Integer>> map;
+ArrayList<Integer> list;
+
+public RandomizedCollection() {
+    list= new ArrayList<>();
+    map= new HashMap<>();
+    r= new Random();
+}
+
+public boolean insert(int val) {
+    list.add(val);
+    if(map.containsKey(val)){
+        
+        HashSet<Integer>set = map.get(val);
+        set.add(list.size()-1);
+        
+        return false;
+    }else{
+        HashSet<Integer> set = new HashSet<>();
+        set.add(list.size()-1);
+        map.put(val , set);
+        return true;
+    }
+}
+
+public boolean remove(int val) {
+    if(map.containsKey(val)){
+        
+        int vidx = map.get(val).iterator().next(); 
+        int lidx = list.size()-1;
+        int lval = list.get(lidx);
+        
+        list.set(lidx , val);
+        list.set(vidx, lval);
+        
+        list.remove(lidx);
+        map.get(val).remove(vidx);
+        
+        if(map.get(val).size()==0){
+            map.remove(val);
+        }
+        
+        if(map.containsKey(lval)){
+            map.get(lval).remove(lidx);
+            map.get(lval).add(vidx);
+        }
+        
+        return true;
+    }else{
+        
+        
+        return false;
+    }
+}
+
+public int getRandom() {
+    int idx= r.nextInt(list.size());
+    return list.get(idx);
+}
+}
+========================================================================================================
+3Q. Largest Reactangle in Histogram
+Code:
+class Solution {
+    public int largestRectangleArea(int[] heights) {
+        Stack<Integer> s = new Stack<>();
+        int[] l = new int[heights.length];
+        int[] r = new int[heights.length];
+        int[] ans = new int[heights.length];
+        for (int i = 0; i < heights.length; i++) {
+            while (!s.isEmpty() && heights[s.peek()] >= heights[i]) {
+                s.pop();
+            }
+            if (s.isEmpty()) {
+                l[i] = -1;
+            } else {
+                l[i] = s.peek();
+            }
+            s.push(i);
+        }
+        s.clear();
+        for (int i = heights.length - 1; i >= 0; i--) {
+            while (!s.isEmpty() && heights[s.peek()] >= heights[i]) {
+                s.pop();
+            }
+            if (s.isEmpty()) {
+                r[i] = heights.length;
+            } else {
+                r[i] = s.peek();
+            }
+            s.push(i);
+        }
+        int max = 0;
+        for (int i = 0; i < heights.length; i++) {
+            int width = r[i] - l[i] - 1;
+            max = Math.max(width * heights[i], max);
+        }
+        return max;
+
+    }
+}
+================================================Strings - Easy================================================================================
+4Q. Valid Paranthesis
+CODE:
+class Solution {
+    public boolean isValid(String s) {
+        ArrayDeque<Character> stk = new ArrayDeque<>();
+        for(int i=0;i<s.length();i++){
+            char x = s.charAt(i);
+            if(x=='(' || x=='{' || x=='[')
+            stk.push(x);
+            else{
+                if(stk.isEmpty()==true)
+                return false;
+                else if(isMatching(stk.peek(),x) == false)
+                return false;
+                else
+                stk.pop();
+            }
+        } 
+           return (stk.isEmpty()==true);
+    }
+    public boolean isMatching(char a,char b){
+        return ((a=='(' && b==')') || (a=='{' && b=='}') || (a=='[' && b==']'));
+    }
+}
+=================================================================================================================================================
+5Q. Print all the duplicate characters in a string
+CODE:
+// Java code to implement the above approach
+import java.util.*;
+
+public class Main {
+    public static void printDuplicates(String str)
+    {
+        int len = str.length();
+
+        char[] chars = str.toCharArray();
+        Arrays.sort(chars);
+        String sortedStr = new String(chars);
+
+        for (int i = 0; i < len; i++) {
+            int count = 1;
+
+            while (i < len - 1
+                   && sortedStr.charAt(i)
+                          == sortedStr.charAt(i + 1)) {
+                count++;
+                i++;
+            }
+
+            if (count > 1) {
+                System.out.println(sortedStr.charAt(i)
+                                   + ", count = " + count);
+            }
+        }
+    }
+
+    public static void main(String[] args)
+    {
+        String str = "test string";
+        printDuplicates(str);
+    }
+}
+=============================================================================================================================
+6Q. Find The Index Of The First Index In a String
+CODE:
+class Solution {
+    public int removeElement(int[] nums, int val) {
+        int count = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != val) {
+                nums[count] = nums[i];
+                count++;
+            }
+        }
+        return count;
+    }
+}
