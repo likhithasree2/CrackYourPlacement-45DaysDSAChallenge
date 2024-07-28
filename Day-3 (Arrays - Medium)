@@ -38,36 +38,37 @@ class Solution {
 3Q. Four Sum
 CODE:
 class Solution {
-    static Map<Integer, List<String>> map = new HashMap<>();
-    
-    static {
-        map.put(2, List.of("a","b","c"));
-        map.put(3, List.of("d","e","f"));
-        map.put(4, List.of("g","h","i"));
-        map.put(5, List.of("j","k","l"));
-        map.put(6, List.of("m","n","o"));
-        map.put(7, List.of("p","q","r","s"));
-        map.put(8, List.of("t","u","v"));
-        map.put(9, List.of("w","x","y","z"));
-    }
-    public List<String> letterCombinations(String digits) {
-        if(digits == null || digits.length() == 0)
-            return Collections.emptyList();
-        List<String> result = new ArrayList<>();
-        findCombinations(0, new StringBuilder(), digits.toCharArray(), result);
-        return result;
-    }
-
-    void findCombinations(int idx, StringBuilder letters, char[] chars, List<String> result) {
-        if(idx == chars.length) {
-            result.add(letters.toString());
-            return;
+    public List<List<Integer>> fourSum(int[] nums, int target) {
+        List<List<Integer>> list=new ArrayList<>();
+        int n=nums.length;
+         if(nums==null ||nums.length==0) return list;
+         Arrays.sort(nums);
+        for(int i=0;i<n;i++){
+            for(int j=i+1;j<n;j++){
+                long tgt=(long)target-nums[j]-nums[i]; 
+                int low=j+1;
+                int high=nums.length-1;
+                while(low<high){
+                    int sum=nums[low]+nums[high];
+                    if(sum>tgt) high--;
+                    else if(sum<tgt) low++;
+                    else{
+                         List<Integer> quad = new ArrayList<>(); 
+                        quad.add(nums[i]);
+                        quad.add(nums[j]);
+                        quad.add(nums[low]);
+                        quad.add(nums[high]);
+                        list.add(quad);
+                        while(low<high && nums[low]==quad.get(2)) low++;
+                        while(low<high && nums[high]==quad.get(3)) high--;
+                     
+                    }
+                }
+                while(j+1<n && nums[j]==nums[j+1]) j++;
+            }
+            while(i+1<n && nums[i]==nums[i+1]) i++;
         }
-        for(String c : map.get(chars[idx]-'0')) {
-            letters.append(c);
-            findCombinations(idx+1, letters, chars, result);
-            letters.deleteCharAt(letters.length()-1);
-        }
+        return list;
     }
 }
 ===========================================================================================
