@@ -1,0 +1,279 @@
+1Q. Rabin-Karp Algorithm for Pattern Searching
+CODE:
+public class Main {
+
+	public final static int d = 256;
+	static void search(String pat, String txt, int q)
+	{
+		int M = pat.length();
+		int N = txt.length();
+		int i, j;
+		int p = 0; // hash value for pattern
+		int t = 0; // hash value for txt
+		int h = 1;
+
+		for (i = 0; i < M - 1; i++)
+			h = (h * d) % q;
+
+		for (i = 0; i < M; i++) {
+			p = (d * p + pat.charAt(i)) % q;
+			t = (d * t + txt.charAt(i)) % q;
+		}
+
+		for (i = 0; i <= N - M; i++) {
+
+			if (p == t) {
+				/* Check for characters one by one */
+				for (j = 0; j < M; j++) {
+					if (txt.charAt(i + j) != pat.charAt(j))
+						break;
+				}
+
+				if (j == M)
+					System.out.println(
+						"Pattern found at index " + i);
+			}
+
+			if (i < N - M) {
+				t = (d * (t - txt.charAt(i) * h)
+					+ txt.charAt(i + M))
+					% q;
+				if (t < 0)
+					t = (t + q);
+			}
+		}
+	}
+
+	public static void main(String[] args)
+	{
+		String txt = "GEEKS FOR GEEKS";
+		String pat = "GEEK";
+		int q = 101;
+		search(pat, txt, q);
+	}
+}
+=====================================================================================================================================
+2Q. Group Anagroms
+CODE:
+class Solution {
+    public List<List<String>> groupAnagrams(String[] strs) {
+        Map<String, List<String>> map = new HashMap<>();
+        
+        for (String word : strs) {
+            char[] chars = word.toCharArray();
+            Arrays.sort(chars);
+            String sortedWord = new String(chars);
+            
+            if (!map.containsKey(sortedWord)) {
+                map.put(sortedWord, new ArrayList<>());
+            }
+            
+            map.get(sortedWord).add(word);
+        }
+        
+        return new ArrayList<>(map.values());
+    }
+}
+======================================================================================================================================
+3Q. Basic Caluculator II
+CODE:
+class Solution {
+    public int calculate(String s) {
+        int resultSoFar = 0;
+        int plusSign = 1, advSign = 1;
+        int operand = 0, prevOp = 0;
+        for(char c: s.toCharArray()) {
+            if(Character.isDigit(c)) {
+                operand = operand * 10 + (int)(c - '0');
+            } else if(c == '*' || c == '/') {
+                if(advSign == 2 || advSign == 3) {
+                    operand = advSign == 2? prevOp * operand : prevOp / operand;
+                }
+
+                advSign = c == '*'? 2: 3;
+                prevOp = operand;
+                operand = 0;
+            } else if(c == '+' || c == '-') {
+                if(advSign == 2 || advSign == 3) {
+                    operand = advSign == 2? prevOp * operand : prevOp / operand;
+                }
+
+                advSign = 1;
+                resultSoFar += operand * plusSign;
+                plusSign = c == '+'? 1: -1;
+                prevOp = 0;
+                operand = 0;
+            }
+        }
+
+        if(advSign != 1) {
+            operand = advSign == 2? prevOp * operand : prevOp / operand;
+        }
+        return resultSoFar + (operand * plusSign);
+    }
+}
+=====================================================================================================================
+4Q. Print Anagrams Together
+CODE:
+import java.util.*;
+
+public class AnagramGroups {
+
+    public static List<List<String>> Anagrams(String[] words) {
+        Map<String, List<String>> anagramMap = new LinkedHashMap<>();
+        
+        for (String word : words) {
+            char[] charArray = word.toCharArray();
+            Arrays.sort(charArray);
+            String sortedWord = new String(charArray);
+            anagramMap.putIfAbsent(sortedWord, new ArrayList<>());
+            anagramMap.get(sortedWord).add(word);
+        }
+        
+        List<List<String>> result = new ArrayList<>();
+        
+        for (List<String> anagrams : anagramMap.values()) {
+            if (anagrams.size() > 1) {
+                Collections.sort(anagrams);
+                result.add(anagrams);
+            }
+        }
+
+        result.sort(Comparator.comparing(group -> group.get(0)));
+        return result;
+    }
+
+    public static void main(String[] args) {
+        String[] words1 = {"act", "god", "cat", "dog", "tac"};
+        List<List<String>> anagramGroups1 = Anagrams(words1);
+        System.out.println(anagramGroups1);
+
+        String[] words2 = {"no", "on", "is"};
+        List<List<String>> anagramGroups2 = Anagrams(words2);
+        System.out.println(anagramGroups2);
+    }
+}
+==========================================================================================================================
+5Q. Smallest window in a string containing all the characters of another string
+CODE:
+import java.util.HashMap;
+
+public class SmallestWindow {
+
+    public static String smallestWindow(String S, String P) {
+        HashMap<Character, Integer> charCountP = new HashMap<>();
+        for (char c : P.toCharArray()) {
+            charCountP.put(c, charCountP.getOrDefault(c, 0) + 1);
+        }
+        
+        int required = charCountP.size();
+        int formed = 0;
+        HashMap<Character, Integer> charCountWindow = new HashMap<>();
+        
+        int left = 0, right = 0;
+        int minLength = Integer.MAX_VALUE;
+        int minLeft = 0;
+
+        while (right < S.length()) {
+            char c = S.charAt(right);
+            charCountWindow.put(c, charCountWindow.getOrDefault(c, 0) + 1);
+
+            if (charCountP.containsKey(c) && charCountWindow.get(c).intValue() == charCountP.get(c).intValue()) {
+                formed++;
+            }
+
+            while (left <= right && formed == required) {
+                c = S.charAt(left);
+
+                if (right - left + 1 < minLength) {
+                    minLength = right - left + 1;
+                    minLeft = left;
+                }
+
+                charCountWindow.put(c, charCountWindow.get(c) - 1);
+                if (charCountP.containsKey(c) && charCountWindow.get(c).intValue() < charCountP.get(c).intValue()) {
+                    formed--;
+                }
+                left++;
+            }
+            right++;
+        }
+
+        return minLength == Integer.MAX_VALUE ? "-1" : S.substring(minLeft, minLeft + minLength);
+    }
+
+    public static void main(String[] args) {
+        String S1 = "timetopractice";
+        String P1 = "toc";
+        System.out.println(smallestWindow(S1, P1)); // Output: "toprac"
+
+        String S2 = "zoomlazapzo";
+        String P2 = "oza";
+        System.out.println(smallestWindow(S2, P2)); // Output: "apzo"
+    }
+}
+==============================================================================================================================================
+6Q. Word Wrap
+CODE:
+public class WordWrap {
+
+    public static int solveWordWrap(int[] nums, int k) {
+        int n = nums.length;
+        int[] dp = new int[n + 1];
+
+        for (int i = 0; i <= n; i++) {
+            dp[i] = Integer.MAX_VALUE;
+        }
+
+        dp[0] = 0;
+
+        for (int i = 1; i <= n; i++) {
+            int totalChars = 0;
+            for (int j = i; j <= n; j++) {
+                totalChars += (j == i ? 0 : 1) + nums[j - 1];
+
+                if (totalChars > k) {
+                    break;
+                }
+
+                int extraSpaces = k - totalChars;
+                int cost = extraSpaces * extraSpaces;
+                dp[j] = Math.min(dp[j], dp[i - 1] + cost);
+            }
+        }
+
+        return dp[n];
+    }
+
+    public static void main(String[] args) {
+        int[] nums1 = {3, 2, 2, 5};
+        int k1 = 6;
+        System.out.println(solveWordWrap(nums1, k1)); // Output: 10
+
+        int[] nums2 = {3, 2, 2};
+        int k2 = 4;
+        System.out.println(solveWordWrap(nums2, k2)); // Output: 5
+
+        int[] nums3 = {4};
+        int k3 = 4;
+        System.out.println(solveWordWrap(nums3, k3)); // Output: 0
+
+        int[] nums4 = {5};
+        int k4 = 4;
+        System.out.println(solveWordWrap(nums4, k4)); // Output: Integer.MAX_VALUE
+
+        int[] nums5 = {1, 2, 1, 2};
+        int k5 = 6;
+        System.out.println(solveWordWrap(nums5, k5)); // Output: 0
+
+        int[] nums6 = {2, 3, 4, 5};
+        int k6 = 7;
+        System.out.println(solveWordWrap(nums6, k6)); // Output: Integer.MAX_VALUE
+
+        int[] nums7 = {2, 2, 2, 2};
+        int k7 = 5;
+        System.out.println(solveWordWrap(nums7, k7)); // Output may vary
+    }
+}
+
+
