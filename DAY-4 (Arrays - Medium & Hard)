@@ -1,1 +1,237 @@
+1Q. Word Search
+CODE:
+class Solution {
+    public boolean exist(char[][] board, String word) {
+        if(word.length() > board.length * board[0].length) return false;
+        //~ not possible, if board has lower char frequency that target
+        // O(n*m)
+        int [] F = new int[256];
+        for(int r=0; r < board.length; ++r) {
+            for(int c=0; c < board[0].length; ++c) {
+                F[board[r][c]] += 1;
+            }
+        }
 
+        for(char v : word.toCharArray()) {
+            F[v] -= 1;
+            if(F[v] < 0) return false;
+        }
+   
+       //~ check for arrangement. Exponential exploration 
+       for(int r=0; r < board.length; ++r) {
+        for(int c=0; c < board[0].length; ++c) {
+            boolean res = search(board, word, r, c, 0);
+            if(res) return true;
+        }
+       } 
+       return false;
+    }
+
+    boolean search(char [][] board, String word, int r, int c, int pos) {
+        if(pos >= word.length()) return true;
+        char v = word.charAt(pos++);
+        if(r < 0 || r >= board.length || c < 0 || c >= board[0].length || board[r][c] != v) return false;
+
+
+        board[r][c] ^= '#';
+        boolean res = search(board, word, r+1, c, pos) 
+                        || search(board, word, r, c+1, pos)
+                        || search(board, word, r-1, c, pos)
+                        || search(board, word, r, c-1, pos);
+        board[r][c] ^= '#';
+        return res;
+    }
+}
+====================================================================================================================================
+2Q. Jump Game
+CODE:
+class Solution {
+    public boolean canJump(int[] nums) {
+        int goal = nums.length-1;
+        
+        for(int i=nums.length-2;i>=0;i--){
+            
+            if(i + nums[i]>= goal ){
+               goal = i;
+            }
+        }
+            return goal == 0;
+        
+    }
+}
+========================================================================================================================================
+3Q. All Unique Permutations in an Array
+CODE:
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class UniquePermutations {
+    
+    public List<List<Integer>> uniquePerms(int n, int[] arr) {
+        Arrays.sort(arr);
+        List<List<Integer>> results = new ArrayList<>();
+        boolean[] visited = new boolean[n];
+        List<Integer> currentPermutation = new ArrayList<>();
+
+        backtrack(arr, visited, currentPermutation, results);
+        return results;
+    }
+
+    private void backtrack(int[] arr, boolean[] visited, List<Integer> currentPermutation, List<List<Integer>> results) {
+        if (currentPermutation.size() == arr.length) {
+            results.add(new ArrayList<>(currentPermutation));
+            return;
+        }
+
+        for (int i = 0; i < arr.length; i++) {
+            if (visited[i]) {
+                continue;
+            }
+
+            if (i > 0 && arr[i] == arr[i - 1] && !visited[i - 1]) {
+                continue;
+            }
+
+            visited[i] = true;
+            currentPermutation.add(arr[i]);
+            backtrack(arr, visited, currentPermutation, results);
+            visited[i] = false;
+            currentPermutation.remove(currentPermutation.size() - 1);
+        }
+    }
+
+    public static void main(String[] args) {
+        UniquePermutations up = new UniquePermutations();
+        
+        int[] arr1 = {1, 2, 1};
+        System.out.println("Test Case 1: " + up.uniquePerms(arr1.length, arr1));
+        
+        int[] arr2 = {4, 5};
+        System.out.println("Test Case 2: " + up.uniquePerms(arr2.length, arr2));
+        
+        int[] arr3 = {1};
+        System.out.println("Test Case 3: " + up.uniquePerms(arr3.length, arr3));
+        
+        int[] arr4 = {2, 2, 2};
+        System.out.println("Test Case 4: " + up.uniquePerms(arr4.length, arr4));
+        
+        int[] arr5 = {1, 1, 2, 3};
+        System.out.println("Test Case 5: " + up.uniquePerms(arr5.length, arr5));
+        
+        int[] arr6 = {};
+        System.out.println("Test Case 6: " + up.uniquePerms(arr6.length, arr6));
+    }
+}
+============================================================================================================
+4Q. Game Of Life
+CODE:
+class Solution {
+    public void gameOfLife(int[][] board) {
+        int m = board.length, n = board[0].length;
+        int[][] res = new int[m][n];
+
+        for (int row = 0; row < m; row++) {
+            for (int col = 0; col < n; col++) {
+                applyRules(row, col, board, res);
+            }
+        }
+
+        for (int row = 0; row < m; row++) {
+            for (int col = 0; col < n; col++) {
+                board[row][col] = res[row][col];
+            }
+        }
+    }
+
+    private void applyRules(int row, int col, int[][] grid, int[][] res) {
+        int count = 0;
+        for (int r = row - 1; r <= row + 1; r++) {
+            for (int c = col - 1; c <= col + 1; c++) {
+                if (r == row && c == col) continue;
+                if (cellExists(r, c, grid)) {
+                    count += grid[r][c];
+                }
+            }
+        }
+        if (count < 2 || count > 3) res[row][col] = 0;
+        else if (count == 3) res[row][col] = 1;
+        else res[row][col] = grid[row][col];
+    }
+
+    private boolean cellExists(int row, int col, int[][] grid) {
+        return (row <= grid.length - 1 && row >= 0) && (col <= grid[0].length - 1 && col >= 0);
+    }
+}
+=======================================================HARD============================================================== 
+5Q. Reverse Pair 
+CODE:
+class Solution {
+    
+    int merge(int[] nums,int low,int mid, int high){
+        int count=0;
+        int j = mid+1;
+        for(int i=low;i<=mid;i++){
+            while(j<=high && nums[i]>(2*(long)nums[j])){
+                j++;
+            }count+=j-(mid+1);
+        }
+        ArrayList<Integer> temp = new ArrayList<>();
+        int left = low,right = mid+1;
+        while(left<=mid && right<=high){
+            if(nums[left]<=nums[right]){
+                temp.add(nums[left++]);
+            }
+            else{
+                temp.add(nums[right++]);
+            }
+        }
+            while(left<=mid){
+                temp.add(nums[left++]);
+            }
+            while(right<=high){
+                temp.add(nums[right++]);
+            }
+            for(int i=low;i<=high;i++){
+                nums[i] = temp.get(i-low);
+            }
+         return count;
+    }
+
+    int mergeSort(int[] nums,int low,int high){
+        if(low>=high)  return 0;
+        int mid = (low+high)/2;
+        int inv = mergeSort(nums,low,mid);
+        inv+= mergeSort(nums,mid+1,high);
+        inv+= merge(nums,low,mid,high);
+        return inv;
+    }
+    
+    public int reversePairs(int[] nums) {
+       return mergeSort(nums,0,nums.length-1);
+    }
+}
+=====================================================================================================================
+6Q. Max Value of Equation
+CODE:
+class Solution {
+    public int findMaxValueOfEquation(int[][] points, int k) {
+        Deque<Pair<Integer, Integer>> dq = new ArrayDeque<>();
+
+        int res=Integer.MIN_VALUE;
+        for(var point:points){
+            while(!dq.isEmpty() && point[0]-dq.peekFirst().getValue() > k){
+                dq.pollFirst();
+            }
+            if(!dq.isEmpty()){
+                res  = Math.max(res, dq.peekFirst().getKey() + point[0] + point[1]);
+            }
+
+            while(!dq.isEmpty() && point[1]-point[0] > dq.peekLast().getKey()){
+                dq.pollLast();
+            }
+            dq.offerLast(new Pair<>(point[1]-point[0], point[0]));
+        }
+        return res;
+    }
+}
