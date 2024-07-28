@@ -1,2 +1,129 @@
 ===============================================Strings - Easy===========================================================================
-1Q. 
+1Q. Longest Comment Prefix
+CODE:
+public class Solution {
+    public String longestCommonPrefix(String[] strs) {
+        if (strs == null || strs.length == 0) return "";
+        String prefix = strs[0];
+        for (String s : strs)
+            while (s.indexOf(prefix) != 0)
+                prefix = prefix.substring(0, prefix.length() - 1);
+        return prefix;
+    }
+}
+===========================================================================================================================================
+2Q. Valid Palindrome II
+CODE:
+class Solution {
+    public boolean validPalindrome(String s) {
+        int left = 0, right = s.length() - 1;
+        while (left < right) {
+            if (s.charAt(left) != s.charAt(right))
+                return isRestOfStringValid(s, left + 1, right) || isRestOfStringValid(s, left, right - 1);
+            left++;
+            right--;
+        }
+        return true;
+    }
+    public boolean isRestOfStringValid(String s, int left, int right) {
+        String str = s.substring(left, right + 1);
+        String reverse = new StringBuilder(str).reverse().toString();
+        return str.equals(reverse);
+    }
+}
+============================================= String - Medium ================================================================================
+3Q. Integer to Roman
+CODE:
+public static String intToRoman(int num) {
+    String M[] = {"", "M", "MM", "MMM"};
+    String C[] = {"", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"};
+    String X[] = {"", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"};
+    String I[] = {"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"};
+    return M[num/1000] + C[(num%1000)/100] + X[(num%100)/10] + I[num%10];
+}
+==============================================================================================================================================
+4Q. Generate Parentheses
+CODE:
+class Solution {
+    public List<String> generateParenthesis(int n) {
+        List<String> res = new ArrayList<String>();
+        recurse(res, 0, 0, "", n);
+        return res;
+    }
+    
+    public void recurse(List<String> res, int left, int right, String s, int n) {
+        if (s.length() == n * 2) {
+            res.add(s);
+            return;
+        }
+        
+        if (left < n) {
+            recurse(res, left + 1, right, s + "(", n);
+        }
+        
+        if (right < left) {
+            recurse(res, left, right + 1, s + ")", n);
+        }
+    }
+}
+================================================================================================================================================
+5Q. Simplify Path
+CODE:
+class Solution {
+    public String simplifyPath(String path) {
+        String[] str=path.split("/");
+        Stack<String> st=new Stack<>();
+        for(String s: str){
+            if(s.equals("..")){
+                if(!st.isEmpty()){
+                        st.pop();
+                    }
+            }else if(!s.equals(".") && !s.equals("")){
+                    st.push(s);
+            }
+        }
+        StringBuilder sb=new StringBuilder();
+        for(String s :st){
+            sb.append("/").append(s);
+        }
+        return sb.length() > 0 ? sb.toString() : "/";
+        }
+}
+==================================================================================================================================================
+6Q. Reverse Words in String
+CODE:
+public class Solution {
+    public String reverseWords(String s) {
+        int length = s.length();
+        List<int[]> wordPositions = new ArrayList<>();  // To store start and end indices of words
+        
+        int i = 0;
+        // Iterate through the string to identify word boundaries
+        while (i < length) {
+            // Skip leading spaces
+            while (i < length && s.charAt(i) == ' ') i++;
+            if (i == length) break;
+            
+            int start = i;  // Start of the word
+            
+            // Move to the end of the word
+            while (i < length && s.charAt(i) != ' ') i++;
+            int end = i - 1;  // End of the word
+            
+            // Store the start and end indices of the word
+            wordPositions.add(new int[] {start, end});
+        }
+        
+        StringBuilder result = new StringBuilder();
+        // Reverse the order of the words and build the result string
+        for (int j = wordPositions.size() - 1; j >= 0; --j) {
+            // Extract the word using substring
+            String word = s.substring(wordPositions.get(j)[0], wordPositions.get(j)[1] + 1);
+            result.append(word);
+            // Add a space between words, except for the last word
+            if (j != 0) result.append(" ");
+        }
+        
+        return result.toString();
+    }
+}
