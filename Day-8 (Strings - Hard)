@@ -1,0 +1,291 @@
+1Q. Valid Number
+CODE:
+class Solution {
+    public boolean isNumber(String s) {
+        int i=0;
+        boolean ex=false,dig=false,dot=false;
+        while(i<s.length()){
+            char ch=s.charAt(i);
+            if(isDigit(ch)){
+                dig=true;
+            }else if(ch=='-' || ch=='+'){
+                if(i>0 && s.charAt(i-1)!='e' && s.charAt(i-1)!='E') return false;
+            }
+            else if(ch=='e' || ch=='E'){
+                if(ex || !dig) return false;
+                ex=true;
+                dig=false;
+            }else if(ch=='.'){
+                if(dot || ex) return false;
+                dot=true;
+            }else return false;
+            i++;
+        }
+        return dig;
+    }
+    public boolean isDigit(char ch){
+        if(ch>='0' && ch<='9') return true;
+        return false;
+    }
+}
+=================================================================================================================================================
+2Q. Interger to English Words
+CODE:
+class Solution {
+    private final String[] belowTen =new String[] {"","One","Two","Three","Four","Five","Six","Seven","Eight","Nine"};
+    private final String[] belowTwenty=new String[] {"Ten","Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen"};
+     private final String[] belowHundred = new String[] {"", "Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"};
+    public String numberToWords(int num) {
+        if(num==0)
+        {
+            return "Zero";
+        }
+        return helper(num);
+    }
+    public String helper(int num)
+    {
+        String result=new String();
+        if(num<10) result=belowTen[num];
+        else if(num<20) result=belowTwenty[num-10];
+        else if(num<100) result=belowHundred[num/10]+" "+helper(num%10);
+        else if (num < 1000) result = helper(num/100) + " Hundred " +  helper(num % 100);
+        else if (num < 1000000) result = helper(num/1000) + " Thousand " +  helper(num % 1000);
+        else if (num < 1000000000) result = helper(num/1000000) + " Million " +  helper(num % 1000000);
+        else result = helper(num/1000000000) + " Billion " + helper(num % 1000000000);
+        return result.trim();
+    }   
+}
+=================================================================================================================================================
+3Q. Minimum Window Substring
+CODE:
+class Solution {
+    public String minWindow(String s, String t) {
+        if (s == null || t == null || s.length() == 0 || t.length() == 0 ||
+                s.length() < t.length()) {
+            return new String();
+        }
+        int[] map = new int[128];
+        int count = t.length();
+        int start = 0, end = 0, minLen = Integer.MAX_VALUE, startIndex = 0;
+        /// UPVOTE !
+        for (char c : t.toCharArray()) {
+            map[c]++;
+        }
+
+        char[] chS = s.toCharArray();
+
+        while (end < chS.length) {
+            if (map[chS[end++]]-- > 0) {
+                count--;
+            }
+            while (count == 0) {
+                if (end - start < minLen) {
+                    startIndex = start;
+                    minLen = end - start;
+                }
+                if (map[chS[start++]]++ == 0) {
+                    count++;
+                }
+            }
+        }
+
+        return minLen == Integer.MAX_VALUE ? new String() :
+                new String(chS, startIndex, minLen);
+    }
+}
+=================================================================================================================================================
+4Q. Text Justification
+CODE:
+class Solution {
+    public List<String> fullJustify(String[] words, int maxWidth) {
+        List<String> s = new ArrayList<String>();
+        int idx = 0;
+        List<Integer> space = new ArrayList<>();
+        StringBuilder line = new StringBuilder();
+        for(int i=0; i<words.length; i++){
+            if(line.length()==0 || line.length()+words[i].length()<maxWidth){
+                line = createLine(line, words[i], space);
+                if(line.length()==maxWidth){
+                    s.add(line.toString());
+                    line=new StringBuilder();
+                    space=new ArrayList<>();
+                }
+                else{
+                    if(i==words.length-1){
+                        s.add(leftJust(line, maxWidth).toString());
+                    }
+                }
+            }
+            else{
+                line = addSpace(line,maxWidth,space);
+                s.add(line.toString());
+                space=new ArrayList<>();
+                line = createLine(new StringBuilder(), words[i], space);
+                if(i==words.length-1)
+                    s.add(leftJust(line, maxWidth).toString());
+            }
+        }
+        return s;
+
+    }
+    public StringBuilder createLine(StringBuilder line, String words, List<Integer> space){
+        if(line.length()==0){
+            line.append(words);
+        }
+        else{
+            line.append(" ");
+            space.add(line.length()-1);
+            line.append(words);
+        }
+        return line;
+    }
+    public StringBuilder leftJust(StringBuilder line, int width){
+        while(line.length()<width){
+            line.append(" ");
+        }
+        return line;
+    }
+    public StringBuilder addSpace(StringBuilder line, int width, List<Integer> space){
+        if(space.size()==0){
+            return leftJust(line,width);
+        }
+        int prev = 0;
+        int j=0;
+        while(line.length()<width){
+            if(j==0){
+                line.insert(space.get(j++), " ");
+            }
+            else{
+                line.insert(space.get(j++)+prev, " ");
+            }
+            if(j==space.size()){
+                j=0;
+            }
+            prev++;
+        }
+        return line;
+    }
+}
+=================================================================================================================================================
+5Q. Boyer Moore Algorithm for Pattern Searching
+CODE:
+/* Java Program for Bad Character Heuristic of Boyer
+Moore String Matching Algorithm */
+
+class AWQ {
+
+	static int NO_OF_CHARS = 256;
+
+	// A utility function to get maximum of two integers
+	static int max(int a, int b) { return (a > b) ? a : b; }
+
+	// The preprocessing function for Boyer Moore's
+	// bad character heuristic
+	static void badCharHeuristic(char[] str, int size,
+								int badchar[])
+	{
+
+		// Initialize all occurrences as -1
+		for (int i = 0; i < NO_OF_CHARS; i++)
+			badchar[i] = -1;
+
+		// Fill the actual value of last occurrence
+		// of a character (indices of table are ascii and
+		// values are index of occurrence)
+		for (int i = 0; i < size; i++)
+			badchar[(int)str[i]] = i;
+	}
+
+	/* A pattern searching function that uses Bad
+	Character Heuristic of Boyer Moore Algorithm */
+	static void search(char txt[], char pat[])
+	{
+		int m = pat.length;
+		int n = txt.length;
+
+		int badchar[] = new int[NO_OF_CHARS];
+
+		/* Fill the bad character array by calling
+		the preprocessing function badCharHeuristic()
+		for given pattern */
+		badCharHeuristic(pat, m, badchar);
+
+		int s = 0; // s is shift of the pattern with
+				// respect to text
+		// there are n-m+1 potential alignments
+		while (s <= (n - m)) {
+			int j = m - 1;
+
+			/* Keep reducing index j of pattern while
+			characters of pattern and text are
+			matching at this shift s */
+			while (j >= 0 && pat[j] == txt[s + j])
+				j--;
+
+			/* If the pattern is present at current
+			shift, then index j will become -1 after
+			the above loop */
+			if (j < 0) {
+				System.out.println(
+					"Patterns occur at shift = " + s);
+
+				/* Shift the pattern so that the next
+				character in text aligns with the last
+				occurrence of it in pattern.
+				The condition s+m < n is necessary for
+				the case when pattern occurs at the end
+				of text */
+				// txt[s+m] is character after the pattern
+				// in text
+				s += (s + m < n) ? m - badchar[txt[s + m]]
+								: 1;
+			}
+
+			else
+				/* Shift the pattern so that the bad
+				character in text aligns with the last
+				occurrence of it in pattern. The max
+				function is used to make sure that we get
+				a positive shift. We may get a negative
+				shift if the last occurrence of bad
+				character in pattern is on the right side
+				of the current character. */
+				s += max(1, j - badchar[txt[s + j]]);
+		}
+	}
+
+	/* Driver program to test above function */
+	public static void main(String[] args)
+	{
+
+		char txt[] = "ABAAABCD".toCharArray();
+		char pat[] = "ABC".toCharArray();
+		search(txt, pat);
+	}
+}
+=================================================================================================================================================
+6Q. Distinct Subsequences
+CODE:
+class Solution {
+    public int numDistinct(String s, String t) {
+        int n = s.length();
+        int m = t.length();
+        int[][] dp = new int[n+1][m+1];
+        for(int[] x : dp){
+            Arrays.fill(x,-1);
+        }
+        return helper(n,m,s,t,dp);
+    }
+    public int helper(int i , int j , String s , String t,int[][] dp){
+        if(i==0 && j!= 0){return 0;}
+        if(j==0){return 1;}
+        if(dp[i][j] != -1){return dp[i][j];}
+        if(s.charAt(i-1) == t.charAt(j-1)){
+            dp[i][j] = helper(i-1,j-1,s,t,dp) + helper(i-1,j,s,t,dp);
+        }
+        else{
+            dp[i][j] = helper(i-1,j,s,t,dp);
+        }
+        return dp[i][j];
+    }
+}
