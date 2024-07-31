@@ -1,0 +1,358 @@
+1Q. 
+CODE
+class MyQueue {
+    private Stack<Integer> s1;
+    private Stack<Integer> s2;
+
+    public MyQueue() {
+        s1 = new Stack<>();
+        s2 = new Stack<>();
+    }
+
+    public void push(int x) {
+        while (!s1.isEmpty()) {
+            s2.push(s1.pop());
+        }
+        s1.push(x);
+        while (!s2.isEmpty()) {
+            s1.push(s2.pop());
+        }
+    }
+
+    public int pop() {
+        return s1.pop();
+    }
+
+    public int peek() {
+        return s1.peek();
+    }
+
+    public boolean empty() {
+        return s1.isEmpty();
+    }
+}
+===========================================================================================================================================
+2Q. Bachspace String Compare
+CODE
+class Solution {
+    private static int nextChar(String str, int cur){
+        while(cur > -1 && str.charAt(cur) == '#'){
+            int cnt = 1;
+            for(cur--; cur > -1 && cnt > 0; cur--)
+                cnt += str.charAt(cur) == '#'? 1 : -1;
+        }
+        return cur;
+    }
+    
+    public boolean backspaceCompare(String s, String t) {
+        int i = nextChar(s, s.length() - 1);
+        int j = nextChar(t, t.length() - 1);
+        
+        while(i > -1 && j > -1){
+            if(s.charAt(i) != t.charAt(j)) return false;
+            i = nextChar(s, i - 1);
+            j = nextChar(t, j - 1);
+        }
+        
+        if(i == -1 && j == -1) return true;
+        return false;
+    }
+}
+===========================================================================================================================================
+3Q. Implement Stack using Queues
+CODE
+class MyStack {
+    Queue<Integer> help;
+    Queue<Integer> help2;
+	
+    public MyStack() {
+        help = new LinkedList<Integer>();
+        help2 = new LinkedList<Integer>();
+    }
+    
+    public void push(int x) {
+        if(help2.isEmpty()) help.offer(x);
+        else help2.offer(x);
+    }
+    
+    public int pop() {
+        if(help.size() > help2.size()){
+            if(help.size() == 1) return help.poll();
+            while(help.size() != 1){
+                help2.offer(help.poll());
+            }
+            return help.poll();
+        }
+        else if(help2.size() > help.size()){
+            if(help2.size() == 1) return help2.poll();
+            while(help2.size() != 1){
+                help.offer(help2.poll());
+            }
+            return help2.poll();
+        }
+		
+		//will not reach this statement 
+        return 1;
+    }
+    
+    public int top() {
+        if(help.size() > help2.size()){
+            if(help.size() == 1) return help.peek();
+            while(help.size() != 1){
+                help2.offer(help.poll());
+            }
+            int a = help.poll();
+            help2.offer(a);
+            return a;
+        }
+        else if(help2.size() > help.size()){
+            if(help2.size() == 1) return help2.poll();
+            while(help2.size() != 1){
+                help.offer(help2.poll());
+            }
+            int a = help2.poll();
+            help.offer(a);
+            return a;
+        }
+		
+		//will not reach this statement 
+        return 1;
+    }
+    
+    public boolean empty() {
+        return help.isEmpty() && help2.isEmpty();
+    }
+}
+===========================================================================================================================================
+4Q. Implement Stack using Queues using Deque
+CODE
+import java.lang.*;
+class GFG {
+    static class DQueNode {
+        int value;
+        DQueNode next;
+        DQueNode prev;
+    }
+
+    static class deque {
+
+        private DQueNode head;
+        private DQueNode tail;
+
+        public deque() { head = tail = null; }
+        boolean isEmpty()
+        {
+            if (head == null)
+                return true;
+
+            return false;
+        }
+
+        int size()
+        {
+            if (!isEmpty()) {
+                DQueNode temp = head;
+                int len = 0;
+
+                while (temp != null) {
+                    len++;
+                    temp = temp.next;
+                }
+                return len;
+            }
+            return 0;
+        }
+        void insert_first(int element)
+        {
+            DQueNode temp = new DQueNode();
+            temp.value = element;
+            if (head == null) {
+                head = tail = temp;
+                temp.next = temp.prev = null;
+            }
+            else {
+                head.prev = temp;
+                temp.next = head;
+                temp.prev = null;
+                head = temp;
+            }
+        }
+        void insert_last(int element)
+        {
+            DQueNode temp = new DQueNode();
+            temp.value = element;
+            if (head == null) {
+                head = tail = temp;
+                temp.next = temp.prev = null;
+            }
+            else {
+                tail.next = temp;
+                temp.next = null;
+                temp.prev = tail;
+                tail = temp;
+            }
+        }
+
+    public void remove_first()
+    {
+    if (!isEmpty()) {
+        if (head == tail) {
+            head = tail = null;
+            return;
+        } else {
+            head = head.next;
+            head.prev = null;
+        }
+    } else {
+        System.out.println("List is Empty");
+        }
+    }
+        void remove_last()
+        {
+            if (!isEmpty()) {
+                DQueNode temp = tail;
+                tail = tail.prev;
+                if (tail != null) {
+                    tail.next = null;
+                }
+                return;
+            }
+            System.out.print("List is Empty");
+        }
+        void display()
+        {
+            if (!isEmpty()) {
+                DQueNode temp = head;
+
+                while (temp != null) {
+                    System.out.print(temp.value + " ");
+                    temp = temp.next;
+                }
+
+                return;
+            }
+            System.out.print("List is Empty");
+        }
+    }
+
+    static class Stack {
+        deque d = new deque();
+        public void push(int element)
+        {
+            d.insert_last(element);
+        }
+        public int size() { return d.size(); }
+        public void pop() { d.remove_last(); }
+        public void display() { d.display(); }
+    }
+    static class Queue {
+        deque d = new deque();
+        public void enqueue(int element)
+        {
+            d.insert_last(element);
+        }
+        public void dequeue() { d.remove_first(); }
+        public void display() { d.display(); }
+        public int size() { return d.size(); }
+    }
+    public static void main(String[] args)
+    {
+        Stack stk = new Stack();
+        stk.push(7);
+        stk.push(8);
+        System.out.print("Stack: ");
+        stk.display();
+        System.out.println();
+        stk.pop();
+        System.out.print("Stack: ");
+        stk.display();
+        System.out.println();
+        Queue que = new Queue();
+        que.enqueue(12);
+        que.enqueue(13);
+        System.out.print("Queue: ");
+        que.display();
+        System.out.println();
+        que.dequeue();
+        System.out.print("Queue: ");
+        que.display();
+
+        System.out.println();
+        System.out.println("Size of stack is "
+                           + stk.size());
+        System.out.println("Size of queue is "
+                           + que.size());
+    }
+}
+===========================================================================================================================================
+5Q. Next Greater Element I
+CODE
+class Solution {
+    public static int[] nextGreater(int[] nums){
+        int n = nums.length;
+        Stack<Integer> st = new Stack<>();
+        int[] res = new int[n];
+        for(int i = 0 ; i < n ; i++){
+            while(!st.isEmpty() && nums[i] > nums[st.peek()]){
+                res[st.peek()] = nums[i];
+                st.pop();
+            }
+            st.push(i);
+        }
+        while(!st.isEmpty()){
+            res[st.peek()] = -1;
+            st.pop();
+        }
+        return res;
+    }
+    public int[] nextGreaterElement(int[] nums1, int[] nums2) {
+        int[] nge = new int[nums2.length];
+        nge = nextGreater(nums2);
+        HashMap<Integer , Integer> hm = new HashMap<>();
+        for(int i = 0 ; i < nge.length ; i++){
+            hm.put(nums2[i] , nge[i]);
+        }
+        int[] ans = new int[nums1.length];
+        for(int j = 0 ; j < nums1.length ; j++){
+            ans[j] = hm.get(nums1[j]);
+        }
+        return ans;
+    }
+}
+===========================================================================================================================================
+6Q. Evaluation of Postfix Expression
+CODE
+class Solution {
+    public static int evaluatePostFix(String S) {
+        Stack<Integer> stack = new Stack<>();
+        
+        for (char ch : S.toCharArray()) {
+            if (Character.isDigit(ch)) {
+                stack.push(ch - '0');
+            } else {
+                int operand2 = stack.pop();
+                int operand1 = stack.pop();
+                int result = 0;
+                
+                switch (ch) {
+                    case '+':
+                        result = operand1 + operand2;
+                        break;
+                    case '-':
+                        result = operand1 - operand2;
+                        break;
+                    case '*':
+                        result = operand1 * operand2;
+                        break;
+                    case '/':
+                        result = operand1 / operand2;
+                        break;
+                }
+                
+                stack.push(result);
+            }
+        }
+        
+        return stack.pop();
+    }
+}
