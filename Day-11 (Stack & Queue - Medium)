@@ -1,18 +1,211 @@
-1Q.
+1Q. Implement two stacks in an array
 CODE
+public class TwoStacks {
+    private int[] arr;
+    private int top1;
+    private int top2;
+    private int size;
+
+    public TwoStacks(int size) {
+        this.size = size;
+        arr = new int[size];
+        top1 = -1;
+        top2 = size;
+    }
+
+    public void push1(int x) {
+        if (top1 < top2 - 1) {
+            top1++;
+            arr[top1] = x;
+        } else {
+            System.out.println("Stack Overflow");
+        }
+    }
+
+    public void push2(int x) {
+        if (top1 < top2 - 1) {
+            top2--;
+            arr[top2] = x;
+        } else {
+            System.out.println("Stack Overflow");
+        }
+    }
+
+    public int pop1() {
+        if (top1 >= 0) {
+            int x = arr[top1];
+            top1--;
+            return x;
+        } else {
+            return -1;
+        }
+    }
+
+    public int pop2() {
+        if (top2 < size) {
+            int x = arr[top2];
+            top2++;
+            return x;
+        } else {
+            return -1;
+        }
+    }
+
+    public static void main(String[] args) {
+        TwoStacks stacks = new TwoStacks(100);
+        stacks.push1(2);
+        stacks.push1(3);
+        stacks.push2(4);
+        System.out.println(stacks.pop1());  // Output: 3
+        System.out.println(stacks.pop2());  // Output: 4
+        System.out.println(stacks.pop2());  // Output: -1
+    }
+}
+
 =========================================================================================================================
-2Q.
+2Q. Daily Temperature
 CODE
+class Solution {
+
+    public int[] dailyTemperatures(int[] t) {
+        int n=t.length;
+      Stack<Integer> s=new Stack<>();
+     
+        int res[]=new int[n];
+        int k=n-1;
+        for(int i=n-1;i>=0;i--)
+        {
+            while(!s.isEmpty()  && t[i]>=t[s.peek()])
+                s.pop();
+
+                if(s.isEmpty())
+                    res[k--]=i;
+                  // res[k--]=t[i];                  
+                else
+                    res[k--]=s.peek();
+                   // res[k--]=t[s.peek()];
+
+                s.add(i);
+ 
+            
+        }
+            for(int i=0;i<n;i++)
+                res[i]=res[i]-i;
+       
+        return res;
+    }
+}
 =========================================================================================================================
-3Q.
+3Q. Minimum Cost Tree from Tree Value 
 CODE
+class Solution {
+    int maxLeaf(int[] arr, int i, int j) {
+        int result = Integer.MIN_VALUE;
+        for (int k = i; k <= j; ++k) {
+            result = Math.max(result, arr[k]);
+        }
+        return result;
+    }
+    public int mctFromLeafValues(int[] arr) {
+    
+        Stack<Integer> st = new Stack<>();
+        st.push(Integer.MAX_VALUE);
+        int res = 0;
+        for (int i : arr) {
+            while (i >= st.peek()) {
+                res += st.pop() * Math.min(i, st.peek());
+            }
+            st.push(i);
+        }
+        while (st.size() > 2) {
+            res += st.pop() * st.peek();
+        }
+        return res;
+    }
+}
 =========================================================================================================================
-4Q.
+4Q. Online Stock Span
 CODE
+class StockSpanner {
+    
+    class Pair {
+        int price;
+        int index;
+        
+        Pair(Integer price , Integer index){
+            this.price = price;
+            this.index = index;
+        }
+    }
+    
+    Stack<Pair> st = new Stack<>(); ;
+    int index = -1;
+    
+    public StockSpanner() {
+        // st = new Stack<>();
+    }
+    
+    public int next(int price) {
+        index++;
+        Pair pair = new Pair(price , index);
+        while(!st.isEmpty() && price >= st.peek().price) {
+				st.pop();
+			}
+		if(st.isEmpty()) {
+            st.push(pair);
+			return index + 1;
+		}else {
+			int prevHigh = st.peek().index;	
+            st.push(pair);
+			return index - prevHigh;
+		}
+    }
+}
 =========================================================================================================================
-5Q.
+5Q. Sum of Subarray Minimums
 CODE
-=========================================================================================================================
-6Q.
-CODE
+class Solution {
+    public int sumSubarrayMins(int[] arr) {
+        int length = arr.length;
+        int[] left = new int[length];
+        int[] right = new int[length];
+      
+        Arrays.fill(left, -1);
+        Arrays.fill(right, length);
+      
+        Deque<Integer> stack = new ArrayDeque<>();
+      
+        for (int i = 0; i < length; ++i) {
+            while (!stack.isEmpty() && arr[stack.peek()] >= arr[i]) {
+                stack.pop();
+            }
+            if (!stack.isEmpty()) {
+                left[i] = stack.peek();
+            }
+            stack.push(i);
+        }
+      
+        stack.clear();
+      
+        for (int i = length - 1; i >= 0; --i) {
+            while (!stack.isEmpty() && arr[stack.peek()] > arr[i]) {
+                stack.pop();
+            }
+            if (!stack.isEmpty()) {
+                right[i] = stack.peek();
+            }
+            stack.push(i);
+        }
+      
+        int mod = (int) 1e9 + 7;
+        long answer = 0;
+      
+        for (int i = 0; i < length; ++i) {
+            answer += (long) (i - left[i]) * (right[i] - i) % mod * arr[i] % mod;
+            answer %= mod;
+        }
+      
+        return (int) answer;
+    }
+}
 
