@@ -1,0 +1,119 @@
+1Q.Rotten Oranges
+CODE
+==============================================================================================================================================
+2Q. Evalute Reverse Polish Notation
+CODE
+class Solution {
+    public int evalRPN(String[] tokens) {
+        int temp;
+        Stack<Integer> stack = new Stack<>();
+        for (String s : tokens)
+        {
+            if (s.equals("+")) {
+                stack.add(stack.pop() + stack.pop());
+            }else if (s.equals("-")) {
+                temp = stack.pop();
+                stack.add(stack.pop() - temp);
+            }else if (s.equals("*")){
+                stack.add(stack.pop() * stack.pop());
+            }else if (s.equals("/")){
+                temp = stack.pop();
+                stack.add(stack.pop() / temp);
+            }else {
+                stack.add(Integer.parseInt(s));
+            }
+        }
+        return stack.pop();
+    }
+}
+==============================================================================================================================================
+3Q. Circular Tour
+CODE
+==============================================================================================================================================
+4Q. Remove all adjacent Duplicates in String II
+CODE
+class Solution {
+    public String removeDuplicates(String s, int k) {
+        
+        Stack<Node> stack = new Stack<>();
+        
+        for(char c : s.toCharArray()){
+            if(stack.isEmpty() || stack.peek().c != c) stack.push(new Node(c, 1));
+            else stack.push(new Node(c, stack.peek().val + 1));
+         
+            if(stack.peek().val == k){
+                int n = k;
+                while(n-- > 0) stack.pop();
+            }
+        }
+        
+        StringBuilder sb = new StringBuilder();
+        while(!stack.isEmpty()) sb.append(stack.pop().c);
+        return sb.reverse().toString();
+    }
+    
+    class Node{
+        char c;
+        int val;
+        public Node(char c, int val){
+            this.c = c;
+            this.val = val;
+        }
+    }
+}
+==============================================================================================================================================
+5Q. Flatten Nested List Iterator
+CODE
+/**
+ * // This is the interface that allows for creating nested lists.
+ * // You should not implement it, or speculate about its implementation
+ * public interface NestedInteger {
+ *
+ *     // @return true if this NestedInteger holds a single integer, rather than a nested list.
+ *     public boolean isInteger();
+ *
+ *     // @return the single integer that this NestedInteger holds, if it holds a single integer
+ *     // Return null if this NestedInteger holds a nested list
+ *     public Integer getInteger();
+ *
+ *     // @return the nested list that this NestedInteger holds, if it holds a nested list
+ *     // Return empty list if this NestedInteger holds a single integer
+ *     public List<NestedInteger> getList();
+ * }
+ */
+public class NestedIterator implements Iterator<Integer> {
+    private List<Integer> flattenList = new ArrayList<Integer>();
+    private int index = 0, flattenListSize;
+
+    private void flatten(NestedInteger n) {
+        if (n.isInteger()) {
+            this.flattenList.add(n.getInteger());
+            return;
+        } else {
+            for (NestedInteger aux : n.getList()) {
+                this.flatten(aux);
+            }
+        }
+    }
+
+    public NestedIterator(List<NestedInteger> nestedList) {
+        for (NestedInteger aux: nestedList) {
+            this.flatten(aux);
+        }
+        this.flattenListSize = this.flattenList.size();
+    }
+
+    @Override
+    public Integer next() {
+        return this.flattenList.get(this.index++);
+    }
+
+    @Override
+    public boolean hasNext() {
+        return this.index < this.flattenListSize;
+    }
+}
+
+==============================================================================================================================================
+6Q. The Celebrity Problem
+CODE
